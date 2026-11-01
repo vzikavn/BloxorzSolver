@@ -11,12 +11,6 @@ from collections import deque
 def solve_bfs(board: Board, initial_state: GameState) -> Dict[str, Any]:
     """
     Hàm khung cho thuật toán Breadth-First Search (BFS).
-    Bạn chỉ cần viết thuật toán vào phần TODO bên dưới.
-    
-    Gợi ý sử dụng:
-    - Kiểm tra đích: board.is_goal(state)
-    - Sinh trạng thái kế tiếp: for action, next_state in board.get_valid_moves(state): ...
-    - Tập visited: visited = {initial_state} (do GameState đã cài đặt chuẩn __hash__ và __eq__)
     """
     tracemalloc.start()
     start_time = time.perf_counter()
@@ -56,7 +50,7 @@ def solve_bfs(board: Board, initial_state: GameState) -> Dict[str, Any]:
 
 def solve_dfs(board: Board, initial_state: GameState) -> Dict[str, Any]:
     """
-    Hàm khung cho thuật toán Depth-First Search (DFS) / Iterative Deepening Search (IDS).
+    Hàm khung cho thuật toán Depth-First Search (DFS).
     """
     tracemalloc.start()
     start_time = time.perf_counter()
@@ -106,13 +100,11 @@ def get_step_cost(board: Board, action: Action, next_state: GameState) -> float:
     *Switch control after spliting: 0.2
     *Each step after splitting takes x1.5 cost to encourage merging
     '''
-    # return 1
     if action == Action.SPACE:
         return 0.2
 
     next_cell = next_state.get_occupied_cells()
     if not next_state.is_split():
-    # if True:
         is_fragile = any(board.get_tile(r, c) == TileType.FRAGILE for r, c in next_cell)
         if is_fragile:
             return 2.5
@@ -129,6 +121,7 @@ def get_step_cost(board: Board, action: Action, next_state: GameState) -> float:
 
     return 1.0 * split_penalty # The rest
 
+
 def solve_ucs(board: Board, initial_state: GameState) -> Dict[str, Any]:
     """
     Hàm khung cho thuật toán Uniform-Cost Search (UCS).
@@ -139,8 +132,7 @@ def solve_ucs(board: Board, initial_state: GameState) -> Dict[str, Any]:
     expanded_nodes = 0
     solution_actions: List[str] = []
 
-    # =========================================================================
-    start = board.get_initial_state()
+    start = initial_state
     pq = [(0.0, 0, start, [])] # (cost, tiebreaker, state, path)
     visited = {start: 0.0} # {state: best_cost}
     tiebreaker = 0
@@ -165,8 +157,6 @@ def solve_ucs(board: Board, initial_state: GameState) -> Dict[str, Any]:
                 visited[next_state] = new_cost
                 tiebreaker += 1
                 heapq.heappush(pq, (new_cost, tiebreaker, next_state, path + [action]))   
-
-    # =========================================================================
 
     elapsed_time = time.perf_counter() - start_time
     _, peak_mem = tracemalloc.get_traced_memory()
@@ -194,6 +184,7 @@ def heuristic(state: GameState, goal: tuple[int, int]) -> float:
     # vì bước đi nhỏ nhất có thể tốn 0.5 (công tắc) nhưng lại di chuyển được khoảng cách 2 ô.
     return min_manhattan * 0.25
 
+
 def solve_astar(board: Board, initial_state: GameState) -> Dict[str, Any]:
     """
     Hàm khung cho thuật toán A* Search.
@@ -204,10 +195,6 @@ def solve_astar(board: Board, initial_state: GameState) -> Dict[str, Any]:
     expanded_nodes = 0
     solution_actions: List[str] = []
 
-    # =========================================================================
-    # TODO: Cài đặt thuật toán A* và hàm Heuristic của bạn tại đây
-    # =========================================================================
-    
     # Hàng đợi ưu tiên PQ lưu các tuple: (f_cost, tiebreaker, g_cost, state, path)
     # tiebreaker giúp tránh lỗi so sánh 2 GameState khi f_cost bằng nhau
     
