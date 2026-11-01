@@ -1,0 +1,6 @@
+# Dự án sử dụng hoàn toàn thư viện chuẩn của Python (Python Standard Library) kèm Tkinter.
+# Không có thư viện bên ngoài (third-party) cần cài đặt qua pip.
+#
+# Yêu cầu hệ thống:
+# Python >= 3.8 (tích hợp sẵn tkinter trên Windows và macOS)
+# Đối với Linux (nếu thiếu tkinter): sudo apt-get install python3-tk
